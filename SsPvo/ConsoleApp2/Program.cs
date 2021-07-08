@@ -37,10 +37,10 @@ namespace ConsoleApp2
                 if (arg.Contains("xlsxfile=")) xlsxfile = arg.Split('=')[1];
             }
 
-            var apiClient = new SSClient(ogrn, kpp, host, new Crypto { X509SubjectFragment = certsubj });
-
+            var apiClient = new SSClient(ogrn, kpp, host, new Crypto { X509SubjectFragment = certsubj }, savepath);
+//            var d = await apiClient.getServiceQueueMsg(4853874, true);
             // !!! ТЕСТ убрать !!!
-            snils = "16267450274"; // Морозова Юлия (есть достижение) - участие в олимпиадах
+            snils = "06760982298"; // Чернов Алексей
             // !!! ТЕСТ убрать !!!
 
 
@@ -57,8 +57,6 @@ namespace ConsoleApp2
             Console.WriteLine();
 
 
-            try
-            {
                 if (!string.IsNullOrWhiteSpace(xlsxfile))
                 {
                     Console.WriteLine($"{nameof(xlsxfile)}: Указан файл с заявлениями, обработка..");
@@ -80,7 +78,7 @@ namespace ConsoleApp2
 
                     foreach (var item in excelData)
                     {
-                        await apiClient.saveXmlBySnils(item.Snils.Trim(), savepath, item.EpguIds);
+                        await apiClient.saveXmlBySnils(item.Snils.Trim(),  item.EpguIds);
                     }
                 }
                 else
@@ -96,21 +94,16 @@ namespace ConsoleApp2
                             Console.WriteLine($"{nameof(snils)}: Указано несколько СНИЛС, обработка..");
                             foreach (var curSnils in snils.Split(','))
                             {
-                                await apiClient.saveXmlBySnils(curSnils.Trim(), savepath);
+                                await apiClient.saveXmlBySnils(curSnils.Trim());
                             }
                         }
                         else
                         {
                             Console.WriteLine($"{nameof(snils)}: Указан СНИЛС:{snils}, обработка..");
-                            await apiClient.saveXmlBySnils(snils.Trim(), savepath);
+                            await apiClient.saveXmlBySnils(snils.Trim());
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Обработка завершилась ошибкой..");
-            }
 
 #if DEBUG
             Console.WriteLine("Нажмите любую клавишу для завершения..");

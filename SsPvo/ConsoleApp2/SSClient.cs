@@ -24,8 +24,14 @@ namespace ConsoleApp2
         private readonly string _apiHost;
         private readonly string _ogrn;
         private readonly string _kpp;
+        private readonly string _path;
+        private readonly int _rertryCount;
+        private readonly int _msRetryDelay;
 
-        public SSClient(string ogrn, string kpp, string apiHost, Crypto csp)
+        public bool debugMode
+            { get; set; }
+
+        public SSClient(string ogrn, string kpp, string apiHost, Crypto csp, string path)
         {
             if (string.IsNullOrWhiteSpace(ogrn)) throw new ArgumentNullException(nameof(ogrn));
             if (string.IsNullOrWhiteSpace(kpp)) throw new ArgumentNullException(nameof(kpp));
@@ -35,9 +41,13 @@ namespace ConsoleApp2
             _ogrn = ogrn;
             _kpp = kpp;
             _apiHost = apiHost;
+            _path = path;
+            _rertryCount = 10;
+            _msRetryDelay = 5000;
+            debugMode = false;
         }
 
-        public async Task<bool> saveXmlBySnils(string snils, string path, string[] appUids = null)
+        public async Task<bool> saveXmlBySnils(string snils, string[] appUids = null)
         {
             Console.WriteLine("Обработка СНИЛС:" + snils);
             uint idJwt = await getSnilsIdJwt(snils);
@@ -48,90 +58,13 @@ namespace ConsoleApp2
             Console.WriteLine("\n\n");
             Console.WriteLine(resp.xml);
             */
-            string fname = path + "\\" + snils;
+            string fname = _path + "\\" + snils;
             writeFile(fname + ".xml", resp.xml);
             writeFile(fname + ".json", resp.json);
             bool snilsConfirmed = await confirmMessage(idJwt);
 
-            XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(resp.xml);
-            var tags = new string[] { "Identifications", "Documents", "EpguEntrantAchievement", "AppAchievement", "Contract" };
-            //var tags = new string[] { "EpguEntrantAchievement" };
-
-            foreach (string tag in tags)
-            {
-                
-                XmlNodeList nodes = xmlDoc.SelectNodes($"//{tag}//UIDEpgu");
-                if (nodes.Count>0)
-                {
-                    Console.WriteLine($"{tag}\n");
-                }
-
-                foreach (XmlNode node in nodes)
-                {
-                    string uid = node.InnerText;
-                    uint tagIdJwt = 0;
-                    if (tag == "Identifications")
-                    {
-                        tagIdJwt = await getIdentificationIdJwt(snils, uid);
-                    }
-                    else if (tag == "Documents")
-                    {
-                        tagIdJwt = await getDocumentIdJwt (snils, uid);
-                    }
-                    // При получении заявления из очереди epgu tag AppAchievement,  при запросе ServiceEntrant - EpguEntrantAchievement
-                    else if (tag == "EpguEntrantAchievement" || tag == "AppAchievement") 
-                    {
-                        if (appUids == null || !appUids.Any()) continue;
-                        // для тестов возьмём хотя бы одно заявление
-                        var appUid = appUids[0];
-                        tagIdJwt = await getAchievementIdJwt(appUid, uid);
-                    }
-                    else if (tag == "Contract")
-                    {
-                        tagIdJwt = await getContractIdJwt(snils, uid);
-                    }
-
-                    //Console.WriteLine(tag + " idJwt:" + tagIdJwt);
-
-                    if (tagIdJwt > 0)
-                    {
-                        RepsonseSS tagResp = await getServiceQueueMsg(tagIdJwt);
-                        string fnameOther = $"{path}\\{snils}-";
-                        if (tag == "Documents")
-                        {
-                            string docType = node.ParentNode.ParentNode.Name;
-                            fnameOther += $"{docType}-{uid}";
-                        }
-                        else
-                        {
-                            fnameOther += $"{tag}-{uid}";
-                        }
-                        writeFile(fnameOther + ".xml", tagResp.xml);
-                        writeFile(fnameOther + ".json", tagResp.json);
-                        bool confirmed = await confirmMessage(tagIdJwt);
-                        var xmlOtherDoc = new XmlDocument();
-                        xmlOtherDoc.LoadXml(tagResp.xml);
-                        XmlNode nodeFile = xmlOtherDoc.SelectSingleNode("//Base64File");
-                        if (nodeFile == null )
-                        {
-                            // Achievement
-                            nodeFile = xmlOtherDoc.SelectSingleNode(".//File//Base64");
-                        }
-                        if (nodeFile != null)
-                        {
-                            var fileExt = nodeFile.ParentNode.SelectSingleNode(".//FileType");
-                            string extension = fileExt != null ? fileExt.InnerText : ".unknown";
-                            if (extension[0]!='.') // в Achievement расширение без точки
-                            {
-                                extension = "." + extension;
-                            }
-                            byte[] bytes = Convert.FromBase64String(nodeFile.InnerText);
-                            writeFile(fnameOther + extension, bytes);
-                        }
-                    }
-                }
-            }
+            // Обработка документов
+            bool parsed = await ParseAbiturXml(snils, resp.xml, appUids);
 
             // Обработка заявлений
             if (appUids != null)
@@ -142,13 +75,121 @@ namespace ConsoleApp2
                     RepsonseSS appResp = await getServiceQueueMsg(appIdJwt);
                     if (appResp!=null)
                     {
-                        string appFileName = path + "\\" + snils + "-application-" + appUid;
+                        string appFileName = _path + "\\" + snils + "-application-" + appUid;
                         writeFile(appFileName + ".xml", appResp.xml);
                         writeFile(appFileName + ".json", appResp.json);
                     }
                 }
             }
             return true;
+        }
+
+        private async Task<bool> ParseAbiturXml(string snils, string xml, string[] appUids)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(xml);
+            /*
+            XmlNode guid_node = xmlDoc.SelectSingleNode($"//ServiceEntrant//GUID");
+            if (guid_node == null)
+            {
+                Console.WriteLine("tag GUID not found in xml");
+                return false;
+            }
+            string person_guid = guid_node.InnerText;
+            */
+
+            var tags = new string[] { "Identifications", "Documents", "EpguEntrantAchievement", "AppAchievement", "Contract" };
+
+            foreach (string tag in tags)
+            {
+                XmlNodeList nodes = xmlDoc.SelectNodes($"//{tag}//UIDEpgu");
+                if (debugMode && nodes.Count > 0)
+                {
+                    Console.WriteLine($"SNILS:{snils} tag:{tag}");
+                }
+
+                foreach (XmlNode node in nodes)
+                {
+                    string uid = node.InnerText;
+                    uint idJwt = 0;
+                    if (tag == "Identifications")
+                    {
+                        idJwt = await getIdentificationIdJwt(snils, uid);
+                    }
+                    else if (tag == "Documents")
+                    {
+                        idJwt = await getDocumentIdJwt(snils, uid);
+                    }
+                    // При получении заявления из очереди epgu tag AppAchievement,  при запросе ServiceEntrant - EpguEntrantAchievement
+                    else if (tag == "EpguEntrantAchievement" || tag == "AppAchievement")
+                    {
+                        if (appUids == null || !appUids.Any()) continue;
+                        // для тестов возьмём хотя бы одно заявление
+                        var appUid = appUids[0];
+                        idJwt = await getAchievementIdJwt(appUid, uid);
+                    }
+                    else if (tag == "Contract")
+                    {
+                        idJwt = await getContractIdJwt(snils, uid);
+                    }
+
+                    //Console.WriteLine(tag + " idJwt:" + tagIdJwt);
+
+                    if (idJwt > 0)
+                    {
+                        RepsonseSS tagResp = await getServiceQueueMsg(idJwt);
+                        string fname = $"{_path}\\{snils}-";
+                        if (tag == "Documents")
+                        {
+                            string docType = node.ParentNode.ParentNode.Name;
+                            fname += $"{docType}-{uid}";
+                        }
+                        else
+                        {
+                            fname += $"{tag}-{uid}";
+                        }
+                        writeFile(fname + ".xml", tagResp.xml);
+                        writeFile(fname + ".json", tagResp.json);
+                        //bool confirmed = await confirmMessage(tagIdJwt);
+                        if (tagResp.xml.Length > 0)
+                        {
+                            parseDocumentResponse(tagResp.xml, fname);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Пустой xml " + fname);
+                        }
+                    } else
+                    {
+                        Console.WriteLine("idJwt <= 0" + idJwt);
+                    }
+                }
+            }
+            return true;
+        }
+
+        private void parseDocumentResponse(string str_xml, string fname) {
+
+            var xml = new XmlDocument();
+            xml.LoadXml(str_xml);
+            XmlNode nodeFile = xml.SelectSingleNode("//Base64File");
+            if (nodeFile == null)
+            {
+                // Achievement
+                nodeFile = xml.SelectSingleNode(".//File//Base64");
+            }
+            if (nodeFile != null)
+            {
+                var fileExt = nodeFile.ParentNode.SelectSingleNode(".//FileType");
+                string extension = fileExt != null ? fileExt.InnerText : ".unknown";
+                if (extension[0] != '.') // в Achievement расширение без точки
+                {
+                    extension = "." + extension;
+                }
+                byte[] bytes = Convert.FromBase64String(nodeFile.InnerText);
+                writeFile(fname + extension, bytes);
+            }
+            return;
         }
 
         public async Task<uint> getApplicationIdJwt(string uidEpgu)
@@ -162,6 +203,11 @@ namespace ConsoleApp2
             }.ToString();
             var payload = $"<PackageData><ServiceApplication><IDApplicationChoice><UIDEpgu>{uidEpgu}</UIDEpgu></IDApplicationChoice></ServiceApplication></PackageData>";
             var response = await sendMessage("/api/token/new", header, payload);
+            if (response == null)
+            {
+                Console.WriteLine($"No reponse for serviceApplication uidEpgu: {uidEpgu}");
+                return 0;
+            }
             var json = response.Content;
             uint idJwt = getIdJwtFromReponse(json);
             return idJwt;
@@ -178,6 +224,11 @@ namespace ConsoleApp2
             }.ToString();
             var payload = $"<PackageData><ServiceEntrant><IDEntrantChoice><SNILS>{snils}</SNILS></IDEntrantChoice></ServiceEntrant></PackageData>";
             var response = await sendMessage("/api/token/new", header, payload);
+            if (response == null)
+            {
+                Console.WriteLine($"No response for  serviceEntrant snils {snils}");
+                return 0;
+            }
             var json = response.Content;
             uint idJwt = getIdJwtFromReponse(json);
             return idJwt;
@@ -229,37 +280,38 @@ namespace ConsoleApp2
             string xmlEmtityTag = capitalizeFirstLetter(entity);
             var payload = $"<PackageData><{xmlEmtityTag}><IDEntrantChoice><SNILS>{snils}</SNILS></IDEntrantChoice><{choiceName}><UIDEpgu>{documentGuid}</UIDEpgu></{choiceName}></{xmlEmtityTag}></PackageData>";
             var response = await sendMessage("/api/token/new", header, payload);
+            if (response == null)
+            {
+                Console.WriteLine($"No repsonse for getEntity entity {entity} snils {snils} docGuid {documentGuid}");
+                return 0;
+            }
             var json = response.Content;
             //Console.WriteLine($"entity {entity} Response:" + json);
             return getIdJwtFromReponse(json);
         }
 
-        public async Task<RepsonseSS> getServiceQueueMsg(uint idJwt, int retryCount = 5, int msRetryDelay = 2000)
+        public async Task<RepsonseSS> getServiceQueueMsg(uint idJwt, bool debugMode = false)
         {
-            var header = new JObject
+            String header = new JObject
             {
                 {"action", "getMessage"},
                 {"idJwt", idJwt},
                 {"ogrn", _ogrn},
                 {"kpp", _kpp}
-            };
+            }.ToString();
 
-            for (int i = 0; i < retryCount; i++)
+            var response = await sendMessage("/api/token/service/info", header, "");
+            if (response == null)
             {
-                try
-                {
-                    var response = await sendMessage("/api/token/service/info", header.ToString(), "");
-                    var json = response.Content;
-                    return parseReponseToken(json);
-                }
-                catch
-                {
-                    Console.WriteLine($"No response Token Sleep for {msRetryDelay / 1000} seconds.");
-                    await Task.Delay(msRetryDelay);
-                }
+                Console.WriteLine($"Cannot get msg idJwt:{idJwt}");
+                return null;
             }
-
-            return null;
+            var json = response.Content;
+            if (debugMode)
+            {
+                Console.WriteLine(response.Content);
+            }
+            return parseReponseToken(json);
         }
 
         private uint getIdJwtFromReponse(String response)
@@ -269,29 +321,37 @@ namespace ConsoleApp2
             {
                 Console.WriteLine("No idJwt in reponse!");
             }
-            return uint.Parse(dict["idJwt"]); ;
+            uint idJwt = uint.Parse(dict["idJwt"]);
+            //Console.WriteLine("idJwt " + idJwt);
+            return idJwt;
         }
 
         public async Task<IRestResponse> sendMessage(String url, String header, String payload)
         {
 
+            IRestResponse response = null;
             JObject json = getSignedObject(_csp, header, payload);
             //Console.WriteLine(json);
-            var request = new RestRequest(url, Method.POST);
-            //            request.AddHeader("Content-type", "application/json");
-            request.AddParameter("application/json", json.ToString(), ParameterType.RequestBody);
-            //Console.WriteLine(request.Body.ToString());
-            var client = new RestClient(_apiHost);
+            for (int i = 0; i < _rertryCount; i++)
+            {
+                var request = new RestRequest(url, Method.POST);
+                request.AddParameter("application/json", json.ToString(), ParameterType.RequestBody);
+                var client = new RestClient(_apiHost);
 
-            var response = await client.ExecutePostAsync(request);
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                Console.WriteLine("HTTP StatusCode:" + response.StatusCode);
-            }
-            Dictionary<String, String> result = JsonConvert.DeserializeObject<Dictionary<String, String>>(response.Content);
-            if (result.ContainsKey("error"))
-            {
-                Console.WriteLine("Error:" + result["error"]);
+                response = await client.ExecutePostAsync(request);
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine("HTTP StatusCode:" + response.StatusCode);
+                    Console.WriteLine($"Sleep for {_msRetryDelay / 1000} secs");
+                    Thread.Sleep(_msRetryDelay);
+                    continue;
+                }
+                Dictionary<String, String> result = JsonConvert.DeserializeObject<Dictionary<String, String>>(response.Content);
+                if (result.ContainsKey("error"))
+                {
+                    Console.WriteLine("Error:" + result["error"]);
+                }
+                break;
             }
             return response;
         }
@@ -308,6 +368,11 @@ namespace ConsoleApp2
                 {"kpp", _kpp}
             }.ToString();
             var response = await sendMessage("/api/token/confirm", header, "");
+            if (response == null)
+            {
+                Console.WriteLine($"No reponse for confirm idJwt: {idJwt}");
+                return false;
+            }
             string json = response.Content;
             Dictionary<String, String> result = JsonConvert.DeserializeObject<Dictionary<String, String>>(json);
             if (!result.ContainsKey("result"))
