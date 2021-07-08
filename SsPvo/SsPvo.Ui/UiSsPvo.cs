@@ -11,6 +11,7 @@ using SsPvo.Ui.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -34,7 +35,7 @@ namespace SsPvo.Ui
         private readonly Crypto _csp;
         private SsPvoApiClient _ssPvoClient;
         private BatchAction _importBatch;
-        private ExcelInportScenarioHandler _jobHandler;
+        private ExcelImportScenarioHandler _jobHandler;
         private CancellationTokenSource _cancellationTokenSource;
         #endregion
 
@@ -86,12 +87,12 @@ namespace SsPvo.Ui
         }
         private void ReInitClient()
         {
-            _csp.X509SubjectFragment = TbCertNameFragment.Text;
+            _csp.X509SubjectFragment = TbSettingCertNameFragment.Text;
 
             _ssPvoClient = new SsPvoApiClient(
-                TbOgrn.Text,
-                TbKpp.Text,
-                TbApiUrl.Text,
+                Settings.Default.OGRN,
+                Settings.Default.KPP,
+                Settings.Default.SelectedApiUrl,
                 _csp,
                 _loggerFactory.CreateLogger<SsPvoApiClient>());
 
@@ -99,10 +100,20 @@ namespace SsPvo.Ui
         }
         private void SaveSettings()
         {
-            // TODO: исправить, чтобы изменения сохранялись между сеансами
-            //Settings.Default.Save();
-            //Settings.Default.Upgrade();
-            //Settings.Default.Reload();
+            // TODO: доработать, чтобы значения менялись автоматически
+            Settings.Default.OGRN = TbSettingOGRN.Text;
+            Settings.Default.KPP = TbSettingKPP.Text;
+            Settings.Default.SelectedApiUrl = TbSettingSelectedApiUrl.Text;
+            Settings.Default.LastImportedXlsxFile = TbApplicationsFile.Text;
+            Settings.Default.LastEntityType = TbEntityType.Text;
+            Settings.Default.AutoConfirmBatchMessages = ChkbSettingAutoConfirmBatchMessages.Checked;
+            Settings.Default.DefaultInputFolder = TbSettingDefaultInputFolder.Text;
+            Settings.Default.DefaultOutputFolder = TbSettingDefaultOutputFolder.Text;
+            Settings.Default.LastIdJwt = TbIdJwt.Text;
+            Settings.Default.CertNameFragment = TbSettingCertNameFragment.Text;
+
+            Settings.Default.Save();
+            Settings.Default.Reload();
         }
 
         private void CustomLogEventSink_LogEvent(object sender, Serilog.Events.LogEvent e)
@@ -130,7 +141,7 @@ namespace SsPvo.Ui
 
             _importBatch =
                 new BatchAction(BatchAction.Scenario.ExcelImport, _loggerFactory.CreateLogger<BatchAction>());
-            _jobHandler = new ExcelInportScenarioHandler(_ssPvoClient);
+            _jobHandler = new ExcelImportScenarioHandler(_ssPvoClient);
             _importBatch.Handlers.Add(_jobHandler);
             ImportItems = new SortableBindingList<BatchAction.Item>();
 
@@ -139,24 +150,37 @@ namespace SsPvo.Ui
             TsbRemoveSelectedItems.Click += (s, e) =>
                 RemoveImportItems(DgvImportFiles.SelectedRowsDataBoundItems<BatchAction.Item>());
             TsbClearItems.Click += (s, e) => RemoveImportItems(ImportItems);
-            TsbCopyToClipboard.Click += TsbCopyToClipboard_Click;
-            TsbClearLog.Click += TsbClearLog_Click;
+            TsbCopyToClipboard.Click += (s, e) => Clipboard.SetText(TbExcelJobsLog.Text);
+            TsbClearLog.Click += (s, e) => TbExcelJobsLog.Clear();
 
-            CbMessageType.DataSource = Enum.GetValues(typeof(SsPvoMessageType));
+            CbMessageType.ValueMember = "Id";
+            CbMessageType.DisplayMember = "Name";
+            CbMessageType.DataSource = Enum.GetValues(typeof(SsPvoMessageType))
+                .OfType<SsPvoMessageType>()
+                .Select(x => new { Id = x, Name = $"{x.GetDescription()} [{x}]" })
+                .ToList();
             CbCls.DataSource = Enum.GetValues(typeof(SsPvoCls));
             CbActionType.DataSource = Enum.GetValues(typeof(SsPvoAction));
 
             CbMessageType.SelectedValueChanged += CbMessageType_SelectedValueChanged;
 
-            BtnApplyApiSettings.Click += (s, ev) =>
+            BtnSaveSettings.Click += (s, ev) =>
             {
                 SaveSettings();
                 ReInitClient();
             };
 
+            BtnResetSettings.Click += (s, ev) =>
+            {
+                Settings.Default.Reset();
+                Settings.Default.Save();
+                Settings.Default.Reload();
+                MessageBox.Show(@"Требуется перезапуск");
+            };
+
             BtnSelectImportFile.Click += (s, ev) =>
             {
-                string filePath = DialogHelper.OpenFile("(*.xlsx)|*.xlsx") as string;
+                string filePath = DialogHelper.OpenFile("(*.xlsx)|*.xlsx", initialDirectory: Settings.Default.DefaultOutputFolder) as string;
                 TbApplicationsFile.Text = $@"{filePath}";
             };
 
@@ -170,14 +194,10 @@ namespace SsPvo.Ui
             InitBindings();
 
             TsbImportEntriesFromExcelFile.Click += (s, e) => LoadApplicationsFile(TbApplicationsFile.Text);
-
-            Closed += (s, ev) => SaveSettings();
         }
         private void CbMessageType_SelectedValueChanged(object sender, EventArgs e)
         {
-            if (CbMessageType.SelectedValue == null ||
-                (SsPvoMessageType)CbMessageType.SelectedValue == SsPvoMessageType.None ||
-                    (SsPvoMessageType)CbMessageType.SelectedValue == SsPvoMessageType.Cert)
+            if (CbMessageType.SelectedValue == null || (SsPvoMessageType)CbMessageType.SelectedValue == SsPvoMessageType.Cert)
             {
                 CbCls.Enabled = false;
                 CbActionType.Enabled = false;
@@ -248,14 +268,6 @@ namespace SsPvo.Ui
             TsbRestart.Image = e == BatchAction.Status.NotStarted
                 ? Properties.Resources.button_green_play_16x16
                 : Properties.Resources.refresh_update;
-        }
-        private void TsbClearLog_Click(object sender, EventArgs e)
-        {
-            TbExcelJobsLog.Clear();
-        }
-        private void TsbCopyToClipboard_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(TbExcelJobsLog.Text);
         }
         private void RemoveImportItems(IEnumerable<BatchAction.Item> itemsToRemove)
         {
@@ -352,11 +364,6 @@ namespace SsPvo.Ui
             try
             {
                 var msgType = (SsPvoMessageType)CbMessageType.SelectedValue;
-                if (msgType == SsPvoMessageType.None)
-                {
-                    MessageBox.Show(@"Необходимо указать тип сообщения!", @"Ошбика", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return null;
-                }
 
                 SsPvoMessage msg = null;
                 var msgOptions = new SsPvoMessage.Options
@@ -366,8 +373,6 @@ namespace SsPvo.Ui
 
                 switch (msgType)
                 {
-                    case SsPvoMessageType.None:
-                        return null;
                     case SsPvoMessageType.Cls:
                         msgOptions.Cls = $"{(SsPvoCls)CbCls.SelectedValue}";
                         break;
@@ -389,17 +394,17 @@ namespace SsPvo.Ui
                         if (msgOptions.QueueMsgType == SsPvoQueueMsgSubType.SingleMessage)
                         {
                             msgOptions.Action = "getMessage";
-                            msgOptions.IdJwt = int.Parse(TbIdJwt.Text);
+                            msgOptions.IdJwt = uint.Parse(TbIdJwt.Text);
                         }
                         break;
                     case SsPvoMessageType.Confirm:
-                        msgOptions.IdJwt = int.Parse(TbIdJwt.Text);
+                        msgOptions.IdJwt = uint.Parse(TbIdJwt.Text);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
-                return _ssPvoClient.DefaultSsPvoMessageFactory.Create(msgOptions);
+                return _ssPvoClient.MessageFactory.Create(msgOptions);
             }
             catch (Exception e)
             {

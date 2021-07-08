@@ -38,11 +38,6 @@ namespace ConsoleApp2
             }
 
             var apiClient = new SSClient(ogrn, kpp, host, new Crypto { X509SubjectFragment = certsubj }, savepath);
-//            var d = await apiClient.getServiceQueueMsg(4853874, true);
-            // !!! ТЕСТ убрать !!!
-            snils = "06760982298"; // Чернов Алексей
-            // !!! ТЕСТ убрать !!!
-
 
             Console.WriteLine("==================================");
             Console.WriteLine($"Текущие настройки:");

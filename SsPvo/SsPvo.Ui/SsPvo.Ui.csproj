@@ -145,7 +145,7 @@
     <Compile Include="Common\Batch\BatchAction.Options.cs" />
     <Compile Include="Common\Batch\BatchAction.Scenario.cs" />
     <Compile Include="Common\Batch\BatchAction.Status.cs" />
-    <Compile Include="Common\Batch\Handlers\ExcelInportScenarioHandler.cs" />
+    <Compile Include="Common\Batch\Handlers\ExcelImportScenarioHandler.cs" />
     <Compile Include="Common\Batch\IBatchScenarioHandler.cs" />
     <Compile Include="Common\DialogHelper.cs" />
     <Compile Include="Common\ExcelHelper.cs" />

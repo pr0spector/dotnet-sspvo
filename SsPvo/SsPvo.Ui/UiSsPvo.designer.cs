@@ -44,12 +44,8 @@ namespace SsPvo.Ui
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
-            this.TsbRestart = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
-            this.TsbCancel = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.TsbRemoveSelectedItems = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.TsbClearItems = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
             this.DgvImportFiles = new System.Windows.Forms.DataGridView();
             this.ColFilePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColFileStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -96,16 +92,26 @@ namespace SsPvo.Ui
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.label4 = new System.Windows.Forms.Label();
-            this.TbKpp = new System.Windows.Forms.TextBox();
-            this.TbOgrn = new System.Windows.Forms.TextBox();
+            this.TbSettingKPP = new System.Windows.Forms.TextBox();
+            this.TbSettingOGRN = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.TbApiUrl = new System.Windows.Forms.TextBox();
-            this.BtnApplyApiSettings = new System.Windows.Forms.Button();
+            this.TbSettingSelectedApiUrl = new System.Windows.Forms.TextBox();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel13 = new System.Windows.Forms.TableLayoutPanel();
             this.label10 = new System.Windows.Forms.Label();
-            this.TbCertNameFragment = new System.Windows.Forms.TextBox();
+            this.TbSettingCertNameFragment = new System.Windows.Forms.TextBox();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel15 = new System.Windows.Forms.TableLayoutPanel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.TbSettingDefaultOutputFolder = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.TbSettingDefaultInputFolder = new System.Windows.Forms.TextBox();
+            this.ChkbSettingAutoConfirmBatchMessages = new System.Windows.Forms.CheckBox();
+            this.tableLayoutPanel16 = new System.Windows.Forms.TableLayoutPanel();
+            this.BtnResetSettings = new System.Windows.Forms.Button();
+            this.BtnSaveSettings = new System.Windows.Forms.Button();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
             this.TbExcelJobsLog = new System.Windows.Forms.TextBox();
@@ -117,6 +123,10 @@ namespace SsPvo.Ui
             this.TssStatusIcon = new System.Windows.Forms.ToolStripStatusLabel();
             this.TssLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tableLayoutPanel14 = new System.Windows.Forms.TableLayoutPanel();
+            this.TsbRestart = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
+            this.TsbCancel = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
+            this.TsbRemoveSelectedItems = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
+            this.TsbClearItems = new SsPvo.Ui.Common.Controls.BindableToolstripButton();
             this.tabControl1.SuspendLayout();
             this.TpExcel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -154,6 +164,9 @@ namespace SsPvo.Ui
             this.tableLayoutPanel6.SuspendLayout();
             this.groupBox12.SuspendLayout();
             this.tableLayoutPanel13.SuspendLayout();
+            this.groupBox13.SuspendLayout();
+            this.tableLayoutPanel15.SuspendLayout();
+            this.tableLayoutPanel16.SuspendLayout();
             this.groupBox10.SuspendLayout();
             this.tableLayoutPanel11.SuspendLayout();
             this.toolStrip1.SuspendLayout();
@@ -335,51 +348,15 @@ namespace SsPvo.Ui
             this.toolStrip2.TabIndex = 25;
             this.toolStrip2.Text = "toolStrip2";
             // 
-            // TsbRestart
-            // 
-            this.TsbRestart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.TsbRestart.Image = global::SsPvo.Ui.Properties.Resources.button_green_play_16x16;
-            this.TsbRestart.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.TsbRestart.Name = "TsbRestart";
-            this.TsbRestart.Size = new System.Drawing.Size(23, 22);
-            this.TsbRestart.Text = "Начать обработку";
-            // 
-            // TsbCancel
-            // 
-            this.TsbCancel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.TsbCancel.Image = global::SsPvo.Ui.Properties.Resources.cancel_16x16;
-            this.TsbCancel.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.TsbCancel.Name = "TsbCancel";
-            this.TsbCancel.Size = new System.Drawing.Size(23, 22);
-            this.TsbCancel.Text = "Прервать";
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
-            // TsbRemoveSelectedItems
-            // 
-            this.TsbRemoveSelectedItems.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.TsbRemoveSelectedItems.Image = global::SsPvo.Ui.Properties.Resources.remove_button_16x16;
-            this.TsbRemoveSelectedItems.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.TsbRemoveSelectedItems.Name = "TsbRemoveSelectedItems";
-            this.TsbRemoveSelectedItems.Size = new System.Drawing.Size(23, 22);
-            this.TsbRemoveSelectedItems.Text = "Удалить выбранные";
-            // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // TsbClearItems
-            // 
-            this.TsbClearItems.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.TsbClearItems.Image = global::SsPvo.Ui.Properties.Resources.waste_bin_16x16;
-            this.TsbClearItems.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.TsbClearItems.Name = "TsbClearItems";
-            this.TsbClearItems.Size = new System.Drawing.Size(23, 22);
-            this.TsbClearItems.Text = "Очистить";
             // 
             // DgvImportFiles
             // 
@@ -711,7 +688,6 @@ namespace SsPvo.Ui
             this.tableLayoutPanel4.SetColumnSpan(this.CbCls, 3);
             this.CbCls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CbCls.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CbCls.Enabled = false;
             this.CbCls.FormattingEnabled = true;
             this.CbCls.Location = new System.Drawing.Point(101, 30);
             this.CbCls.Name = "CbCls";
@@ -929,11 +905,12 @@ namespace SsPvo.Ui
             // 
             this.tableLayoutPanel7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel7.ColumnCount = 2;
-            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel7.Controls.Add(this.groupBox9, 0, 0);
-            this.tableLayoutPanel7.Controls.Add(this.BtnApplyApiSettings, 0, 2);
             this.tableLayoutPanel7.Controls.Add(this.groupBox12, 0, 1);
+            this.tableLayoutPanel7.Controls.Add(this.groupBox13, 1, 0);
+            this.tableLayoutPanel7.Controls.Add(this.tableLayoutPanel16, 0, 2);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
@@ -952,7 +929,7 @@ namespace SsPvo.Ui
             this.groupBox9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox9.Location = new System.Drawing.Point(3, 3);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(773, 97);
+            this.groupBox9.Size = new System.Drawing.Size(526, 97);
             this.groupBox9.TabIndex = 10;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "API";
@@ -965,11 +942,11 @@ namespace SsPvo.Ui
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel6.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel6.Controls.Add(this.label4, 0, 0);
-            this.tableLayoutPanel6.Controls.Add(this.TbKpp, 1, 2);
-            this.tableLayoutPanel6.Controls.Add(this.TbOgrn, 1, 1);
+            this.tableLayoutPanel6.Controls.Add(this.TbSettingKPP, 1, 2);
+            this.tableLayoutPanel6.Controls.Add(this.TbSettingOGRN, 1, 1);
             this.tableLayoutPanel6.Controls.Add(this.label2, 0, 2);
             this.tableLayoutPanel6.Controls.Add(this.label1, 0, 1);
-            this.tableLayoutPanel6.Controls.Add(this.TbApiUrl, 1, 0);
+            this.tableLayoutPanel6.Controls.Add(this.TbSettingSelectedApiUrl, 1, 0);
             this.tableLayoutPanel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel6.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel6.Name = "tableLayoutPanel6";
@@ -978,7 +955,7 @@ namespace SsPvo.Ui
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel6.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel6.Size = new System.Drawing.Size(767, 78);
+            this.tableLayoutPanel6.Size = new System.Drawing.Size(520, 78);
             this.tableLayoutPanel6.TabIndex = 0;
             // 
             // label4
@@ -992,23 +969,23 @@ namespace SsPvo.Ui
             this.label4.TabIndex = 9;
             this.label4.Text = "Адрес API:";
             // 
-            // TbKpp
+            // TbSettingKPP
             // 
-            this.TbKpp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TbKpp.Location = new System.Drawing.Point(70, 55);
-            this.TbKpp.Name = "TbKpp";
-            this.TbKpp.Size = new System.Drawing.Size(694, 20);
-            this.TbKpp.TabIndex = 5;
-            this.TbKpp.Text = global::SsPvo.Ui.Properties.Settings.Default.KPP;
+            this.TbSettingKPP.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TbSettingKPP.Location = new System.Drawing.Point(70, 55);
+            this.TbSettingKPP.Name = "TbSettingKPP";
+            this.TbSettingKPP.Size = new System.Drawing.Size(447, 20);
+            this.TbSettingKPP.TabIndex = 5;
+            this.TbSettingKPP.Text = global::SsPvo.Ui.Properties.Settings.Default.KPP;
             // 
-            // TbOgrn
+            // TbSettingOGRN
             // 
-            this.TbOgrn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TbOgrn.Location = new System.Drawing.Point(70, 29);
-            this.TbOgrn.Name = "TbOgrn";
-            this.TbOgrn.Size = new System.Drawing.Size(694, 20);
-            this.TbOgrn.TabIndex = 4;
-            this.TbOgrn.Text = global::SsPvo.Ui.Properties.Settings.Default.OGRN;
+            this.TbSettingOGRN.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TbSettingOGRN.Location = new System.Drawing.Point(70, 29);
+            this.TbSettingOGRN.Name = "TbSettingOGRN";
+            this.TbSettingOGRN.Size = new System.Drawing.Size(447, 20);
+            this.TbSettingOGRN.TabIndex = 4;
+            this.TbSettingOGRN.Text = global::SsPvo.Ui.Properties.Settings.Default.OGRN;
             // 
             // label2
             // 
@@ -1032,23 +1009,14 @@ namespace SsPvo.Ui
             this.label1.TabIndex = 7;
             this.label1.Text = "ОГРН:";
             // 
-            // TbApiUrl
+            // TbSettingSelectedApiUrl
             // 
-            this.TbApiUrl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TbApiUrl.Location = new System.Drawing.Point(70, 3);
-            this.TbApiUrl.Name = "TbApiUrl";
-            this.TbApiUrl.Size = new System.Drawing.Size(694, 20);
-            this.TbApiUrl.TabIndex = 6;
-            this.TbApiUrl.Text = global::SsPvo.Ui.Properties.Settings.Default.SelectedApiUrl;
-            // 
-            // BtnApplyApiSettings
-            // 
-            this.BtnApplyApiSettings.Location = new System.Drawing.Point(3, 173);
-            this.BtnApplyApiSettings.Name = "BtnApplyApiSettings";
-            this.BtnApplyApiSettings.Size = new System.Drawing.Size(104, 26);
-            this.BtnApplyApiSettings.TabIndex = 10;
-            this.BtnApplyApiSettings.Text = "Применить";
-            this.BtnApplyApiSettings.UseVisualStyleBackColor = true;
+            this.TbSettingSelectedApiUrl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TbSettingSelectedApiUrl.Location = new System.Drawing.Point(70, 3);
+            this.TbSettingSelectedApiUrl.Name = "TbSettingSelectedApiUrl";
+            this.TbSettingSelectedApiUrl.Size = new System.Drawing.Size(447, 20);
+            this.TbSettingSelectedApiUrl.TabIndex = 6;
+            this.TbSettingSelectedApiUrl.Text = global::SsPvo.Ui.Properties.Settings.Default.SelectedApiUrl;
             // 
             // groupBox12
             // 
@@ -1058,7 +1026,7 @@ namespace SsPvo.Ui
             this.groupBox12.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox12.Location = new System.Drawing.Point(3, 106);
             this.groupBox12.Name = "groupBox12";
-            this.groupBox12.Size = new System.Drawing.Size(773, 61);
+            this.groupBox12.Size = new System.Drawing.Size(526, 45);
             this.groupBox12.TabIndex = 11;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "ЭЦП";
@@ -1071,7 +1039,8 @@ namespace SsPvo.Ui
             this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel13.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel13.Controls.Add(this.label10, 0, 0);
-            this.tableLayoutPanel13.Controls.Add(this.TbCertNameFragment, 1, 0);
+            this.tableLayoutPanel13.Controls.Add(this.TbSettingCertNameFragment, 1, 0);
+            this.tableLayoutPanel13.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel13.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel13.Name = "tableLayoutPanel13";
             this.tableLayoutPanel13.RowCount = 4;
@@ -1079,7 +1048,7 @@ namespace SsPvo.Ui
             this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel13.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel13.Size = new System.Drawing.Size(764, 26);
+            this.tableLayoutPanel13.Size = new System.Drawing.Size(520, 26);
             this.tableLayoutPanel13.TabIndex = 0;
             // 
             // label10
@@ -1093,15 +1062,149 @@ namespace SsPvo.Ui
             this.label10.TabIndex = 9;
             this.label10.Text = "Subject сертификата (фрагмент для поиска в хранилище):";
             // 
-            // TbCertNameFragment
+            // TbSettingCertNameFragment
             // 
-            this.TbCertNameFragment.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::SsPvo.Ui.Properties.Settings.Default, "CertNameFragment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.TbCertNameFragment.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TbCertNameFragment.Location = new System.Drawing.Point(311, 3);
-            this.TbCertNameFragment.Name = "TbCertNameFragment";
-            this.TbCertNameFragment.Size = new System.Drawing.Size(450, 20);
-            this.TbCertNameFragment.TabIndex = 6;
-            this.TbCertNameFragment.Text = global::SsPvo.Ui.Properties.Settings.Default.CertNameFragment;
+            this.TbSettingCertNameFragment.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::SsPvo.Ui.Properties.Settings.Default, "CertNameFragment", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.TbSettingCertNameFragment.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TbSettingCertNameFragment.Location = new System.Drawing.Point(311, 3);
+            this.TbSettingCertNameFragment.Name = "TbSettingCertNameFragment";
+            this.TbSettingCertNameFragment.Size = new System.Drawing.Size(206, 20);
+            this.TbSettingCertNameFragment.TabIndex = 6;
+            this.TbSettingCertNameFragment.Text = global::SsPvo.Ui.Properties.Settings.Default.CertNameFragment;
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.AutoSize = true;
+            this.groupBox13.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.groupBox13.Controls.Add(this.tableLayoutPanel15);
+            this.groupBox13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox13.Location = new System.Drawing.Point(535, 3);
+            this.groupBox13.Name = "groupBox13";
+            this.tableLayoutPanel7.SetRowSpan(this.groupBox13, 2);
+            this.groupBox13.Size = new System.Drawing.Size(526, 148);
+            this.groupBox13.TabIndex = 12;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Выгрузка";
+            // 
+            // tableLayoutPanel15
+            // 
+            this.tableLayoutPanel15.AutoSize = true;
+            this.tableLayoutPanel15.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel15.ColumnCount = 2;
+            this.tableLayoutPanel15.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel15.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel15.Controls.Add(this.label11, 0, 0);
+            this.tableLayoutPanel15.Controls.Add(this.TbSettingDefaultOutputFolder, 1, 1);
+            this.tableLayoutPanel15.Controls.Add(this.label13, 0, 2);
+            this.tableLayoutPanel15.Controls.Add(this.label14, 0, 1);
+            this.tableLayoutPanel15.Controls.Add(this.TbSettingDefaultInputFolder, 1, 0);
+            this.tableLayoutPanel15.Controls.Add(this.ChkbSettingAutoConfirmBatchMessages, 1, 2);
+            this.tableLayoutPanel15.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel15.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel15.Name = "tableLayoutPanel15";
+            this.tableLayoutPanel15.RowCount = 4;
+            this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel15.Size = new System.Drawing.Size(520, 129);
+            this.tableLayoutPanel15.TabIndex = 0;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label11.Location = new System.Drawing.Point(3, 3);
+            this.label11.Margin = new System.Windows.Forms.Padding(3);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(144, 20);
+            this.label11.TabIndex = 9;
+            this.label11.Text = "Искать в:";
+            // 
+            // TbSettingDefaultOutputFolder
+            // 
+            this.TbSettingDefaultOutputFolder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TbSettingDefaultOutputFolder.Location = new System.Drawing.Point(153, 29);
+            this.TbSettingDefaultOutputFolder.Name = "TbSettingDefaultOutputFolder";
+            this.TbSettingDefaultOutputFolder.Size = new System.Drawing.Size(364, 20);
+            this.TbSettingDefaultOutputFolder.TabIndex = 4;
+            this.TbSettingDefaultOutputFolder.Text = global::SsPvo.Ui.Properties.Settings.Default.DefaultOutputFolder;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label13.Location = new System.Drawing.Point(3, 55);
+            this.label13.Margin = new System.Windows.Forms.Padding(3);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(144, 14);
+            this.label13.TabIndex = 8;
+            this.label13.Text = "Подтверждать сообщения:";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label14.Location = new System.Drawing.Point(3, 29);
+            this.label14.Margin = new System.Windows.Forms.Padding(3);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(144, 20);
+            this.label14.TabIndex = 7;
+            this.label14.Text = "Выгружать в:";
+            // 
+            // TbSettingDefaultInputFolder
+            // 
+            this.TbSettingDefaultInputFolder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TbSettingDefaultInputFolder.Location = new System.Drawing.Point(153, 3);
+            this.TbSettingDefaultInputFolder.Name = "TbSettingDefaultInputFolder";
+            this.TbSettingDefaultInputFolder.Size = new System.Drawing.Size(364, 20);
+            this.TbSettingDefaultInputFolder.TabIndex = 6;
+            this.TbSettingDefaultInputFolder.Text = global::SsPvo.Ui.Properties.Settings.Default.DefaultInputFolder;
+            // 
+            // ChkbSettingAutoConfirmBatchMessages
+            // 
+            this.ChkbSettingAutoConfirmBatchMessages.AutoSize = true;
+            this.ChkbSettingAutoConfirmBatchMessages.Checked = global::SsPvo.Ui.Properties.Settings.Default.AutoConfirmBatchMessages;
+            this.ChkbSettingAutoConfirmBatchMessages.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ChkbSettingAutoConfirmBatchMessages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ChkbSettingAutoConfirmBatchMessages.Location = new System.Drawing.Point(153, 55);
+            this.ChkbSettingAutoConfirmBatchMessages.Name = "ChkbSettingAutoConfirmBatchMessages";
+            this.ChkbSettingAutoConfirmBatchMessages.Size = new System.Drawing.Size(364, 14);
+            this.ChkbSettingAutoConfirmBatchMessages.TabIndex = 10;
+            this.ChkbSettingAutoConfirmBatchMessages.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel16
+            // 
+            this.tableLayoutPanel16.ColumnCount = 2;
+            this.tableLayoutPanel16.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel16.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel16.Controls.Add(this.BtnResetSettings, 1, 0);
+            this.tableLayoutPanel16.Controls.Add(this.BtnSaveSettings, 0, 0);
+            this.tableLayoutPanel16.Location = new System.Drawing.Point(3, 157);
+            this.tableLayoutPanel16.Name = "tableLayoutPanel16";
+            this.tableLayoutPanel16.RowCount = 2;
+            this.tableLayoutPanel16.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel16.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel16.Size = new System.Drawing.Size(222, 71);
+            this.tableLayoutPanel16.TabIndex = 13;
+            // 
+            // BtnResetSettings
+            // 
+            this.BtnResetSettings.Location = new System.Drawing.Point(114, 3);
+            this.BtnResetSettings.Name = "BtnResetSettings";
+            this.BtnResetSettings.Size = new System.Drawing.Size(104, 26);
+            this.BtnResetSettings.TabIndex = 11;
+            this.BtnResetSettings.Text = "По умолчанию";
+            this.BtnResetSettings.UseVisualStyleBackColor = true;
+            // 
+            // BtnSaveSettings
+            // 
+            this.BtnSaveSettings.Location = new System.Drawing.Point(3, 3);
+            this.BtnSaveSettings.Name = "BtnSaveSettings";
+            this.BtnSaveSettings.Size = new System.Drawing.Size(104, 26);
+            this.BtnSaveSettings.TabIndex = 10;
+            this.BtnSaveSettings.Text = "Сохранить";
+            this.BtnSaveSettings.UseVisualStyleBackColor = true;
             // 
             // groupBox10
             // 
@@ -1216,6 +1319,42 @@ namespace SsPvo.Ui
             this.tableLayoutPanel14.Size = new System.Drawing.Size(1084, 639);
             this.tableLayoutPanel14.TabIndex = 19;
             // 
+            // TsbRestart
+            // 
+            this.TsbRestart.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TsbRestart.Image = global::SsPvo.Ui.Properties.Resources.button_green_play_16x16;
+            this.TsbRestart.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TsbRestart.Name = "TsbRestart";
+            this.TsbRestart.Size = new System.Drawing.Size(23, 22);
+            this.TsbRestart.Text = "Начать обработку";
+            // 
+            // TsbCancel
+            // 
+            this.TsbCancel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TsbCancel.Image = global::SsPvo.Ui.Properties.Resources.cancel_16x16;
+            this.TsbCancel.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TsbCancel.Name = "TsbCancel";
+            this.TsbCancel.Size = new System.Drawing.Size(23, 22);
+            this.TsbCancel.Text = "Прервать";
+            // 
+            // TsbRemoveSelectedItems
+            // 
+            this.TsbRemoveSelectedItems.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TsbRemoveSelectedItems.Image = global::SsPvo.Ui.Properties.Resources.remove_button_16x16;
+            this.TsbRemoveSelectedItems.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TsbRemoveSelectedItems.Name = "TsbRemoveSelectedItems";
+            this.TsbRemoveSelectedItems.Size = new System.Drawing.Size(23, 22);
+            this.TsbRemoveSelectedItems.Text = "Удалить выбранные";
+            // 
+            // TsbClearItems
+            // 
+            this.TsbClearItems.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.TsbClearItems.Image = global::SsPvo.Ui.Properties.Resources.waste_bin_16x16;
+            this.TsbClearItems.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.TsbClearItems.Name = "TsbClearItems";
+            this.TsbClearItems.Size = new System.Drawing.Size(23, 22);
+            this.TsbClearItems.Text = "Очистить";
+            // 
             // UiSsPvo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1279,6 +1418,11 @@ namespace SsPvo.Ui
             this.groupBox12.PerformLayout();
             this.tableLayoutPanel13.ResumeLayout(false);
             this.tableLayoutPanel13.PerformLayout();
+            this.groupBox13.ResumeLayout(false);
+            this.groupBox13.PerformLayout();
+            this.tableLayoutPanel15.ResumeLayout(false);
+            this.tableLayoutPanel15.PerformLayout();
+            this.tableLayoutPanel16.ResumeLayout(false);
             this.groupBox10.ResumeLayout(false);
             this.tableLayoutPanel11.ResumeLayout(false);
             this.tableLayoutPanel11.PerformLayout();
@@ -1336,13 +1480,13 @@ namespace SsPvo.Ui
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox TbOgrn;
-        private System.Windows.Forms.TextBox TbKpp;
-        private System.Windows.Forms.TextBox TbApiUrl;
+        private System.Windows.Forms.TextBox TbSettingOGRN;
+        private System.Windows.Forms.TextBox TbSettingKPP;
+        private System.Windows.Forms.TextBox TbSettingSelectedApiUrl;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
-        private System.Windows.Forms.Button BtnApplyApiSettings;
+        private System.Windows.Forms.Button BtnSaveSettings;
         private System.Windows.Forms.StatusStrip TssStatus;
         private System.Windows.Forms.ToolStripStatusLabel TssStatusIcon;
         private System.Windows.Forms.ToolStripStatusLabel TssLabel;
@@ -1378,7 +1522,17 @@ namespace SsPvo.Ui
         private System.Windows.Forms.GroupBox groupBox12;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel13;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox TbCertNameFragment;
+        private System.Windows.Forms.TextBox TbSettingCertNameFragment;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel14;
+        private System.Windows.Forms.GroupBox groupBox13;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel15;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox TbSettingDefaultOutputFolder;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.TextBox TbSettingDefaultInputFolder;
+        private System.Windows.Forms.CheckBox ChkbSettingAutoConfirmBatchMessages;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel16;
+        private System.Windows.Forms.Button BtnResetSettings;
     }
 }

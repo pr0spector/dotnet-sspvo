@@ -41,66 +41,123 @@ namespace SsPvo.Ui.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string LastImportedXlsxFile {
             get {
                 return ((string)(this["LastImportedXlsxFile"]));
             }
+            set {
+                this["LastImportedXlsxFile"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public string LastIdJwt {
             get {
                 return ((string)(this["LastIdJwt"]));
             }
+            set {
+                this["LastIdJwt"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string LastEntityType {
             get {
                 return ((string)(this["LastEntityType"]));
             }
+            set {
+                this["LastEntityType"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0000000000000")]
         public string OGRN {
             get {
                 return ((string)(this["OGRN"]));
             }
+            set {
+                this["OGRN"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("000000000")]
         public string KPP {
             get {
                 return ((string)(this["KPP"]));
             }
+            set {
+                this["KPP"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Мой ВУЗ")]
         public string CertNameFragment {
             get {
                 return ((string)(this["CertNameFragment"]));
             }
+            set {
+                this["CertNameFragment"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("http://10.3.60.3:8031/api")]
         public string SelectedApiUrl {
             get {
                 return ((string)(this["SelectedApiUrl"]));
+            }
+            set {
+                this["SelectedApiUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("in")]
+        public string DefaultInputFolder {
+            get {
+                return ((string)(this["DefaultInputFolder"]));
+            }
+            set {
+                this["DefaultInputFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("out")]
+        public string DefaultOutputFolder {
+            get {
+                return ((string)(this["DefaultOutputFolder"]));
+            }
+            set {
+                this["DefaultOutputFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoConfirmBatchMessages {
+            get {
+                return ((bool)(this["AutoConfirmBatchMessages"]));
+            }
+            set {
+                this["AutoConfirmBatchMessages"] = value;
             }
         }
     }

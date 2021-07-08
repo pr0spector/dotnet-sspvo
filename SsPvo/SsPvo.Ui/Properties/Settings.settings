@@ -8,26 +8,35 @@
     <Setting Name="SsPvoAPIUrlDev" Type="System.String" Scope="Application">
       <Value Profile="(Default)">http://85.142.162.12:8031/api</Value>
     </Setting>
-    <Setting Name="LastImportedXlsxFile" Type="System.String" Scope="Application">
+    <Setting Name="LastImportedXlsxFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="LastIdJwt" Type="System.String" Scope="Application">
+    <Setting Name="LastIdJwt" Type="System.String" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="LastEntityType" Type="System.String" Scope="Application">
+    <Setting Name="LastEntityType" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="OGRN" Type="System.String" Scope="Application">
+    <Setting Name="OGRN" Type="System.String" Scope="User">
       <Value Profile="(Default)">0000000000000</Value>
     </Setting>
-    <Setting Name="KPP" Type="System.String" Scope="Application">
+    <Setting Name="KPP" Type="System.String" Scope="User">
       <Value Profile="(Default)">000000000</Value>
     </Setting>
-    <Setting Name="CertNameFragment" Type="System.String" Scope="Application">
+    <Setting Name="CertNameFragment" Type="System.String" Scope="User">
       <Value Profile="(Default)">Мой ВУЗ</Value>
     </Setting>
-    <Setting Name="SelectedApiUrl" Type="System.String" Scope="Application">
+    <Setting Name="SelectedApiUrl" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://10.3.60.3:8031/api</Value>
+    </Setting>
+    <Setting Name="DefaultInputFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">in</Value>
+    </Setting>
+    <Setting Name="DefaultOutputFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">out</Value>
+    </Setting>
+    <Setting Name="AutoConfirmBatchMessages" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

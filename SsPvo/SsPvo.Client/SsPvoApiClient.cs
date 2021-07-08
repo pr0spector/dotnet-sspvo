@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using SsPvo.Client.Models;
+using System.Xml.Linq;
 
 namespace SsPvo.Client
 {
@@ -49,19 +50,19 @@ namespace SsPvo.Client
             _restClient = new RestClient(apiUrl);
             _restClient.UseNewtonsoftJson(Utils.SerializerSettings);
 
-            DefaultSsPvoMessageFactory = new SsPvoMessageFactory(ogrn, kpp);
+            MessageFactory = new SsPvoMessageFactory(ogrn, kpp);
 
-            logger?.LogDebug($"{nameof(SsPvoApiClient)} initialized");
+            logger?.LogDebug($"{nameof(SsPvoApiClient)} initialized. ogrn: {ogrn}, kpp: {kpp}, URL: {apiUrl}");
         }
 
         #region props
-        public SsPvoMessageFactory DefaultSsPvoMessageFactory { get; }
+        public SsPvoMessageFactory MessageFactory { get; }
         #endregion
 
         #region methods
         public virtual async Task<ResponseData> SendMessage(SsPvoMessage.Options options,
             CancellationToken token = default(CancellationToken)) =>
-            await SendMessage(DefaultSsPvoMessageFactory.Create(options), token);
+            await SendMessage(MessageFactory.Create(options), token);
 
         public virtual async Task<ResponseData> SendMessage(SsPvoMessage msg, 
             CancellationToken token = default(CancellationToken))
@@ -129,5 +130,59 @@ namespace SsPvo.Client
             return rd.TryExtractResponse<TExpected, SsPvoApiClient>(_logger);
         }
         #endregion
+
+
+        #region helpers
+        public async Task<ResponseData> SendDictionaryMessage(string cls, CancellationToken token = default(CancellationToken))
+        {
+            var msg = MessageFactory.Create(new SsPvoMessage.Options { Type = SsPvoMessageType.Cls, Cls = cls });
+            return await SendMessage(msg, token);
+        }
+
+        public async Task<ResponseData> SendCertCheckMessage(CancellationToken token = default(CancellationToken))
+        {
+            var msg = MessageFactory.Create(new SsPvoMessage.Options { Type = SsPvoMessageType.Cert });
+            return await SendMessage(msg, token);
+        }
+
+        public async Task<ResponseData> SendActionMessage(string action, string entityType, XDocument data, CancellationToken token = default(CancellationToken))
+        {
+            var msg = MessageFactory.Create(new SsPvoMessage.Options
+                {Type = SsPvoMessageType.Action, Action = action, EntityType = entityType, Payload = data});
+            return await SendMessage(msg, token);
+        }
+
+        public async Task<ResponseData> SendCheckQueueMessage(SsPvoQueue queue, CancellationToken token = default(CancellationToken))
+        {
+            var msgType = queue == SsPvoQueue.Epgu
+                ? SsPvoMessageType.EpguQueue
+                : SsPvoMessageType.ServiceQueue;
+
+            var msg = MessageFactory.Create(new SsPvoMessage.Options { Type = msgType, QueueMsgType = SsPvoQueueMsgSubType.AllMessages });
+            return await SendMessage(msg, token);
+        }
+
+        public async Task<ResponseData> SendGetQueueItemMessage(SsPvoQueue queue, uint idJwt = 0, CancellationToken token = default(CancellationToken))
+        {
+            var msgType = queue == SsPvoQueue.Epgu
+                ? SsPvoMessageType.EpguQueue
+                : SsPvoMessageType.ServiceQueue;
+
+            var msg = MessageFactory.Create(new SsPvoMessage.Options
+            {
+                Type = msgType,
+                Action = "getMessage",
+                QueueMsgType = SsPvoQueueMsgSubType.SingleMessage,
+                IdJwt = idJwt
+            });
+            return await SendMessage(msg, token);
+        }
+
+        public async Task<ResponseData> SendQueueConfirmMessage(uint idJwt, CancellationToken token = default(CancellationToken))
+        {
+            var msg = MessageFactory.Create(new SsPvoMessage.Options { Type = SsPvoMessageType.Confirm, IdJwt = idJwt });
+            return await SendMessage(msg, token);
+        }
+        #endregion 
     }
 }

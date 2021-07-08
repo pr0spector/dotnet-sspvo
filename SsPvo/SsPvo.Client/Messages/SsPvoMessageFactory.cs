@@ -71,7 +71,7 @@ namespace SsPvo.Client.Messages
             return Create(new SsPvoMessage.Options {Type = msgType, QueueMsgType = SsPvoQueueMsgSubType.AllMessages});
         }
 
-        public SsPvoMessage CreateGetQueueItemMessage(SsPvoQueue queue, int idJwt = 0)
+        public SsPvoMessage CreateGetQueueItemMessage(SsPvoQueue queue, uint idJwt = 0)
         {
             var msgType = queue == SsPvoQueue.Epgu
                 ? SsPvoMessageType.EpguQueue
@@ -83,7 +83,7 @@ namespace SsPvo.Client.Messages
             });
         }
 
-        public SsPvoMessage CreateQueueConfirmMessage(int idJwt)
+        public SsPvoMessage CreateQueueConfirmMessage(uint idJwt)
         {
             return Create(new SsPvoMessage.Options {Type = SsPvoMessageType.Confirm, IdJwt = idJwt});
         }

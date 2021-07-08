@@ -9,6 +9,6 @@ namespace SsPvo.Client.Models
         public int Messages { get; set; }
 
         [JsonProperty("idJwts", Required = Required.Default)]
-        public int[] IdJwts { get; set; }
+        public uint[] IdJwts { get; set; }
     }
 }

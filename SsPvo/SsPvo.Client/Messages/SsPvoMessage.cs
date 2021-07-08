@@ -40,7 +40,7 @@ namespace SsPvo.Client.Messages
             public SsPvoMessageType Type { get; set; }
             public SsPvoQueueMsgSubType? QueueMsgType { get; set; }
             public string Action { get; set; }
-            public int IdJwt { get; set; }
+            public uint IdJwt { get; set; }
             public string Cls { get; set; }
             public string EntityType { get; set; }
             public XDocument Payload { get; set; }
