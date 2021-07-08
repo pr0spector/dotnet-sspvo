@@ -61,10 +61,10 @@ namespace ConsoleApp2
             string fname = _path + "\\" + snils;
             writeFile(fname + ".xml", resp.xml);
             writeFile(fname + ".json", resp.json);
-            bool snilsConfirmed = await confirmMessage(idJwt);
+            bool confirmed = await confirmMessage(idJwt);
 
             // Обработка документов
-            bool parsed = await ParseAbiturXml(snils, resp.xml, appUids);
+            bool parsed = await parseAbiturXml(snils, resp.xml, appUids);
 
             // Обработка заявлений
             if (appUids != null)
@@ -84,7 +84,7 @@ namespace ConsoleApp2
             return true;
         }
 
-        private async Task<bool> ParseAbiturXml(string snils, string xml, string[] appUids)
+        private async Task<bool> parseAbiturXml(string snils, string xml, string[] appUids)
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
@@ -137,7 +137,7 @@ namespace ConsoleApp2
 
                     if (idJwt > 0)
                     {
-                        RepsonseSS tagResp = await getServiceQueueMsg(idJwt);
+                        RepsonseSS response = await getServiceQueueMsg(idJwt);
                         string fname = $"{_path}\\{snils}-";
                         if (tag == "Documents")
                         {
@@ -148,12 +148,12 @@ namespace ConsoleApp2
                         {
                             fname += $"{tag}-{uid}";
                         }
-                        writeFile(fname + ".xml", tagResp.xml);
-                        writeFile(fname + ".json", tagResp.json);
-                        //bool confirmed = await confirmMessage(tagIdJwt);
-                        if (tagResp.xml.Length > 0)
+                        writeFile(fname + ".xml", response.xml);
+                        writeFile(fname + ".json", response.json);
+                        bool confirmed = await confirmMessage(idJwt);
+                        if (response.xml.Length > 0)
                         {
-                            parseDocumentResponse(tagResp.xml, fname);
+                            parseDocumentResponse(response.xml, fname);
                         }
                         else
                         {
