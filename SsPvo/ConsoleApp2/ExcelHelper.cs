@@ -1,6 +1,7 @@
 ﻿using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -8,7 +9,7 @@ namespace ConsoleApp2
 {
     public static class ExcelHelper
     {
-        public static SnilsWithEpguIds[] GetSnilsWithAppUidsFromXlsFile(string file)
+        public static XlsxAppInfo[] GetAppsFromExcel(string file, Func<ExcelWorksheet, int, Dictionary<string, int>, XlsxAppInfo> mapping)
         {
             using (var excelPackage = new ExcelPackage(new FileInfo(file)))
             {
@@ -31,32 +32,109 @@ namespace ConsoleApp2
 
                 for (int r = 2; r <= numRows; r++)
                 {
-                    data.Add(new XlsxAppInfo
-                    {
-                        AppNum = $"{sheet.Cells[r, headerToColumnIndex["Номер заявления"]].Value}",
-                        Snils = $"{sheet.Cells[r, headerToColumnIndex["Снилс"]].Value}",
-                        EpguId = $"{sheet.Cells[r, headerToColumnIndex["ЕПГУ"]].Value}"
-                    });
+                    data.Add(mapping(sheet, r, headerToColumnIndex));
                 }
 
-                return data.GroupBy(x => x.Snils)
-                    .Select(gr =>
-                    {
-                        return new SnilsWithEpguIds
-                        {
-                            Snils = gr.Key,
-                            EpguIds = gr.Select(x => x.EpguId).ToArray()
-                        };
-                    })
-                    .ToArray();
+                return data.ToArray();
             }
+        }
+
+        public static SnilsWithEpguIds[] GetSnilsWithAppUidsFromXlsFile(string file)
+        {
+            var data = GetAppsFromExcel(file, XlsxAppInfo.FromExcelRowMin);
+            return data.GroupBy(x => x.Snils)
+                .Select(gr =>
+                {
+                    return new SnilsWithEpguIds
+                    {
+                        Snils = gr.Key,
+                        EpguIds = gr.Select(x => x.EpguId).ToArray()
+                    };
+                })
+                .ToArray();
         }
 
         public struct XlsxAppInfo
         {
+            [DisplayName("Номер заявления")]
             public string AppNum { get; set; }
+            [DisplayName("Фамилия")]
+            public string LastName { get; set; }
+            [DisplayName("Имя")]
+            public string FirstName { get; set; }
+            [DisplayName("Отчество")]
+            public string MiddleName { get; set; }
+            [DisplayName("Снилс")]
             public string Snils { get; set; }
+            [DisplayName("Конкурс")]
+            public string CgName { get; set; }
+            [DisplayName("Уровень")]
+            public string Level { get; set; }
+            [DisplayName("Форма")]
+            public string Form { get; set; }
+            [DisplayName("Источник финанс.")]
+            public string FinSource { get; set; }
+            [DisplayName("Статус")]
+            public string EpguStatus { get; set; }
+            [DisplayName("Дата регистр.")]
+            public string RegDate { get; set; }
+            [DisplayName("Дата изменения")]
+            public string LastModDate { get; set; }
+            [DisplayName("Оригинал док. об образ-нии")]
+            public string IsOriginal { get; set; }
+            [DisplayName("Согласие на зачисл.")]
+            public string IsAgreed { get; set; }
+            [DisplayName("Дата согласия")]
+            public string IsAgreedDate { get; set; }
+            [DisplayName("Отзыв согласия на зачисл.")]
+            public string IsRevoked { get; set; }
+            [DisplayName("Дата отзыва согласия")]
+            public string IsRevokedDate { get; set; }
+            [DisplayName("Общежитие")]
+            public string NeedHostel { get; set; }
+            [DisplayName("Рейтинг")]
+            public string Rating { get; set; }
+            [DisplayName("ЕПГУ")]
             public string EpguId { get; set; }
+
+            public Dictionary<string, string> OtherColumns { get; set; }
+
+            public static XlsxAppInfo FromExcelRow(ExcelWorksheet ws, int r, Dictionary<string, int> columnMap)
+            {
+                return new XlsxAppInfo
+                {
+                    AppNum = $"{ws.Cells[r, columnMap["Номер заявления"]].Value}",
+                    LastName = $"{ws.Cells[r, columnMap["Фамилия"]].Value}",
+                    FirstName = $"{ws.Cells[r, columnMap["Имя"]].Value}",
+                    MiddleName = $"{ws.Cells[r, columnMap["Отчество"]].Value}",
+                    Snils = $"{ws.Cells[r, columnMap["Снилс"]].Value}",
+                    CgName = $"{ws.Cells[r, columnMap["Конкурс"]].Value}",
+                    Level = $"{ws.Cells[r, columnMap["Уровень"]].Value}",
+                    Form = $"{ws.Cells[r, columnMap["Форма"]].Value}",
+                    FinSource = $"{ws.Cells[r, columnMap["Источник финанс."]].Value}",
+                    EpguStatus = $"{ws.Cells[r, columnMap["Статус"]].Value}",
+                    RegDate = $"{ws.Cells[r, columnMap["Дата регистр."]].Value}",
+                    LastModDate = $"{ws.Cells[r, columnMap["Дата изменения"]].Value}",
+                    IsOriginal = $"{ws.Cells[r, columnMap["Оригинал док. об образ-нии"]].Value}",
+                    IsAgreed = $"{ws.Cells[r, columnMap["Согласие на зачисл."]].Value}",
+                    IsAgreedDate = $"{ws.Cells[r, columnMap["Дата согласия"]].Value}",
+                    IsRevoked = $"{ws.Cells[r, columnMap["Отзыв согласия на зачисл."]].Value}",
+                    IsRevokedDate = $"{ws.Cells[r, columnMap["Дата отзыва согласия"]].Value}",
+                    NeedHostel = $"{ws.Cells[r, columnMap["Общежитие"]].Value}",
+                    Rating = $"{ws.Cells[r, columnMap["Рейтинг"]].Value}",
+                    EpguId = $"{ws.Cells[r, columnMap["ЕПГУ"]].Value}"
+                };
+            }
+
+            public static XlsxAppInfo FromExcelRowMin(ExcelWorksheet ws, int r, Dictionary<string, int> columnMap)
+            {
+                return new XlsxAppInfo
+                {
+                    AppNum = $"{ws.Cells[r, columnMap["Номер заявления"]].Value}",
+                    Snils = $"{ws.Cells[r, columnMap["Снилс"]].Value}",
+                    EpguId = $"{ws.Cells[r, columnMap["ЕПГУ"]].Value}"
+                };
+            }
         }
 
         public struct SnilsWithEpguIds
